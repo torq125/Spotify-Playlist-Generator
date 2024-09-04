@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Grayscale - Start Bootstrap Theme</title>
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+
+
+        <style>
+
+            .boton-elegante {
+            display: flex;
+            height: 100px;
+            padding: 15px 30px;
+            border: 0px solid #2c2c2c;
+            background-color: #1a1a1a00;
+            color: #ffffff;
+            cursor: pointer;
+            border-radius: 0px;
+            transition: all 0.4s ease;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+            font-weight: bold;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0.4px;
+            }
+
+            .boton-elegante::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle,
+                rgba(255, 255, 255, 0.25) 0%,
+                rgba(255, 255, 255, 0) 70%
+            );
+            transform: scale(0);
+            transition: transform 0.5s ease;
+            }
+
+            .boton-elegante:hover::after {
+            transform: scale(4);
+            }
+
+            .boton-elegante:hover {
+            border-color: #ff0000;
+            background: #29292900;
+            letter-spacing: 1.2px;
+            }
+
+
+
+            table, th, td {
+                justify-content: center;
+                border: none;
+                border-collapse: collapse;
+                color: white;
+                font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            }
+
+            table{
+                display: grid;
+            }
+
+            th, td {
+                width: 350px;
+                word-wrap: break-word;
+                padding: 20px;
+                text-align: center;
+                transition: background-color 0.1s ease, letter-spacing 0.4s ease
+            }
+
+            .table-title{
+                margin-bottom: 40px;
+                font-size: 100px;
+                color: white;
+                font-weight: bolder;
+                font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            }
+            
+            .btn-container{
+                display: flex;
+                justify-content: center;
+            }
+
+            .btn {
+                color: rgb(255, 255, 255);
+                background-color: rgb(0, 255, 0);
+                text-transform: uppercase;
+                text-decoration: none;
+                font-weight: bolder;
+                font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+                padding: 10px 20px;
+                font-size: 17px;
+                font-weight: bold;
+                position: relative;
+                transition: all 1s;
+                overflow: hidden;
+                justify-self: center;
+            }
+
+            .btn:hover {
+                color: rgb(0, 255, 0);
+                border: 1px solid rgb(0, 255, 0);
+            }
+
+            .btn::before {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 0%;
+            top: 0;
+            left: -40px;
+            transform: skewX(45deg);
+            background-color: purple;
+            z-index: -1;
+            transition: all 1s;
+            }
+
+            .btn:hover::before {
+            width: 160%;
+            }
+
+            /*inout field*/
+            #playlist_name{
+                font-size: 20px;
+                border-radius: 0px;
+                line-height: 1.5;
+                padding: 5px 10px;
+                transition: box-shadow 100ms ease-in, border 100ms ease-in, background-color 100ms ease-in;
+                border: 0px;
+                border-bottom: 2px solid #ffffff;
+                color: rgb(255, 255, 255);
+                background: #000000;
+                display: block;
+                height: 60px;
+                width: 100%;
+                margin: 40px;
+            }
+            #playlist_name:focus{
+                outline: none;
+            }
+               
+
+        </style>
+
+        <script>
+
+            function send_playlist_name(ele){
+                var name = ele.textContent
+                var id = ele.id
+
+                fetch('/get-recommendations', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ id: id, name: name })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    displayRecommendations(data.tracks)
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            }      
+            
+            function displayRecommendations(data){
+                // console.log("Here!")
+                console.log(data);
+                console.log("length:-", data.length)
+                const table = document.getElementById("recommendation");
+                table.innerHTML = "";
+                const caption = document.createElement('caption');
+                caption.textContent = 'RECOMMENDATIONS';
+                caption.className = "table-title";
+                table.appendChild(caption);
+
+                for(let i=0; i<data.length; i+=3){
+                    const row = document.createElement('tr');
+                    /*console.log("Loop!");*/
+                    for (let j=i; j<i+3 && j<data.length; j++){
+                        // console.log("Inner Loop!");
+                        const cell = document.createElement('td');
+                        const p = document.createElement('p');
+                        p.textContent = data[j]['name'];
+                        // console.log(data[j]);
+                        p.id = data[j]['track_uri']
+                        cell.appendChild(p);
+                        row.appendChild(cell);
+
+                    }
+                    table.appendChild(row);
+                }
+            }
+
+        </script>
+
+        <script>
+            function send_new_playlist_data(){
+
+                fetch('/save-playlist', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(playlist_data())
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+
+
+                function playlist_data(){
+                    
+                    const table = document.getElementById("recommendation");
+                    const generated_playlist = {};
+                    const track_uris = [];
+                    
+                    for (let i = 0; i < table.children.length; i++) {
+                        const child = table.children[i];
+
+                        // If the child is a <tr> element, loop through its cells
+                        if (child.tagName === 'TR') {
+                            for (let j = 0; j < child.children.length; j++) {
+                                const cell = child.children[j];
+                                const p = cell.querySelector('p');
+                                console.log(`  Cell ${j}:`, p.innerText);
+                                console.log('   <p> ID:-', p.id );
+                                track_uris.push(p.id);
+                            }
+
+                        }
+                    }
+                    generated_playlist['name'] = document.getElementById("playlist_name").value;
+                    generated_playlist['track_uris'] = track_uris;
+                    return generated_playlist;
+                }
+            }
+        </script>
+        
+
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="#page-top">Spotify Playlist Generator</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="#about">Connect Spotify</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#projects">Generate Recommendations</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#signup">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Masthead-->
+        <header class="masthead">
+            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+                <div class="d-flex justify-content-center">
+                    <div class="text-center">
+                        <h1 class="mx-auto my-0 text-uppercase">Generate Playlist</h1>
+                        <h2 class="text-white-50 mx-auto mt-2 mb-5">Get a playlist generated according to the music you listen.</h2>
+                        <a class="btn btn-custom", href="#about">Get Startted!</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- About-->
+        <section class="about-section text-center" id="about">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-lg-8">
+                        <form action="{{ url_for('connectSpotify') }}">
+                            <button class="btn btn-custom", style="font-weight: bolder", type="submit">
+                                Connect Spotify
+                            </button>
+                        </form>
+                        <p class="text-white-50", style="margin-top: 20px;">
+                            Connect your Spotify Account so we can analyze your music taste and give you recommendations.
+                        </p>
+                    </div>
+                </div>
+                <!-- <img class="img-fluid" src="assets/img/phone music.png" alt="..." /> -->
+            </div>
+        </section>
+        <!-- Playlist-->
+        <section class="projects-section" id="projects">
+
+            <table id="user-playlist">
+                <caption class="table-title">YOUR PLAYLIST'S</caption>
+                <tbody>
+                    {% for row in playlist_names|batch(3) %}
+                    <tr>
+                        {% for playlist in row %}
+                        <td><p class="boton-elegante", id='{{ playlist["id"] }}' onclick="send_playlist_name(this)">{{ playlist['name'] }}</p></td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <table id="recommendation">
+            </table>
+            <div class="container">
+                <input name="playlist_name", id="playlist_name", placeholder="Enter Playlist Name", text="text">
+            </div>
+            <div class="btn-container">
+                <button class="btn" type="submit" onclick="send_new_playlist_data()">Save Playlist</button>
+            </div>
+        </section>
+        
+        
+        <!-- Contact-->
+        <section class="contact-section bg-black">
+            <div class="container px-4 px-lg-5">
+                <div class="social d-flex justify-content-center">
+                    <a class="mx-2" href="#!"><i class="fab fa-twitter"></i></a>
+                    <a class="mx-2" href="#!"><i class="fab fa-facebook-f"></i></a>
+                    <a class="mx-2" href="#!"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </section>
+        <!-- Footer-->
+        <footer class="footer bg-black small text-center text-white-50"><div class="container px-4 px-lg-5">Copyright &copy; Your Website 2023</div></footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+        <!-- * *                               SB Forms JS                               * *-->
+        <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+        
+
+        <script>
+            
+
+            
+        </script>
+    </body>
+</html>
