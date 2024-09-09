@@ -5,10 +5,10 @@ import spotipy
 import time
 
 app = Flask(__name__)
-app.secret_key = '6338313224e06a8f7007fa12'
+app.secret_key = ''
 
-CLIENT_ID = "9e58a90985b5456097e313ae15f18c3a"
-CLIENT_SECRET = "6b59e20e226f4de59da184d96ea89180"
+CLIENT_ID = ""
+CLIENT_SECRET = ""
 SCOPE = "user-library-read user-read-recently-played user-top-read user-follow-read playlist-read-collaborative playlist-read-private playlist-modify-public playlist-modify-private user-read-private user-read-email"
 
 TOKEN_INFO = ""
