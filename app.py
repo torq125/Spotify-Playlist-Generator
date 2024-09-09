@@ -45,7 +45,7 @@ def get_playlists():
 def get_recommendations():
     try:
         response = request.get_json()
-        ids = r.generate_recommendation(response['id']).tolist()
+        ids = r.generate_recommendation(response['id'], sp).tolist()
             # print("Type:-", type(recommendations))
             # print(recommendations)
         token_info = get_token()

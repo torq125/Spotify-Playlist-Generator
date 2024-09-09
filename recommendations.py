@@ -16,9 +16,9 @@ def fetch_playlists(sP):
         
     return playlists
 
-def generate_recommendation(playlist_id, number_of_recommendations=10):
+def generate_recommendation(playlist_id, sP, number_of_recommendations=10):
 
-    user_playlist_vecotor = SpotifyAPI.generate_playlist_vector(playlist_id)
+    user_playlist_vecotor = SpotifyAPI.generate_playlist_vector(playlist_id, sP)
     songs_df = pd.read_csv(r'Kaggle Dataset 1M Spotify Songs\dataset.csv')
     normalized_songs_df = pd.read_csv(r'Kaggle Dataset 1M Spotify Songs\Normalized Dataset.csv')
 

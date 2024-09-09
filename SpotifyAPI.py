@@ -3,18 +3,7 @@ from spotipy.oauth2 import SpotifyOAuth
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 
-#setting up Spotify API
-client_id = '9e58a90985b5456097e313ae15f18c3a'
-client_secret = '6b59e20e226f4de59da184d96ea89180'
-
-scope = 'user-library-read user-read-recently-played user-top-read user-follow-read playlist-read-collaborative playlist-read-private'
-
-auth_manager = SpotifyOAuth(client_id=client_id, client_secret=client_secret,
-                                                       scope = scope,
-                                                       redirect_uri='https://localhost:8888/callback')
-sp = spotipy.Spotify(auth_manager=auth_manager)
-
-def get_song_features(song_ids):
+def get_song_features(song_ids, sP):
 
     # This function returns the audio_features of the tracks present in the playlist.
 
@@ -29,7 +18,7 @@ def get_song_features(song_ids):
         batch_start = current_id
         batch_end = min(len(song_ids), current_id + batch_size)
 
-        features_data = sp.audio_features(tracks=[d['track_id'] for d in song_ids[batch_start:batch_end]])
+        features_data = sP.audio_features(tracks=[d['track_id'] for d in song_ids[batch_start:batch_end]])
 
         for features in features_data:
             features_to_extract = [ 'danceability', 'energy', 'key', 'loudness', 'speechiness',
@@ -47,7 +36,7 @@ def get_song_features(song_ids):
 
     return songs_data
 
-def generate_playlist_vector(playlist_id):
+def generate_playlist_vector(playlist_id, sP):
 
     # This function returns a playlist vector of the playlist selected by the user
 
@@ -55,7 +44,7 @@ def generate_playlist_vector(playlist_id):
 
     #Getting the list of songs in the playlist
     playlist_vector = []
-    playlist_data = sp.playlist_items(playlist_id=playlist_id)
+    playlist_data = sP.playlist_items(playlist_id=playlist_id)
 
     #Getting the track_id and track_name of the songs in the playlist
     song_ids = []
@@ -108,4 +97,4 @@ def generate_playlist_vector(playlist_id):
 #             #user_playlist_vector = user_playlist_vector(playlist['id'])
 
 if __name__ == "__main__":
-    print("HI!")
+    print("From SpotifyApi.py")
